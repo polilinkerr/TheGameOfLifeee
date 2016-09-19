@@ -6,9 +6,9 @@ import java.util.Map;
 
 public class LifeBoard extends JPanel implements MouseListener, ComponentListener, MouseMotionListener, Runnable {
 
-    private Dimension DimBoardGame = null;
-    private static Map<Point,Boolean> LifeGrid = new HashMap<Point,Boolean>();
     private static final int CellSize = 20;
+    private static Map<Point,Boolean> LifeGrid = new HashMap<Point,Boolean>();
+    private Dimension DimBoardGame = null;
     private int iMovesPerSecond = 3;
 
     LifeBoard(){
@@ -16,7 +16,6 @@ public class LifeBoard extends JPanel implements MouseListener, ComponentListene
         addMouseListener(this);
         addMouseMotionListener(this);
     }
-
 
 
     public void paintComponent(Graphics g){
@@ -42,57 +41,6 @@ public class LifeBoard extends JPanel implements MouseListener, ComponentListene
             g.drawLine(CellSize, ((i*CellSize)+CellSize), CellSize*(DimBoardGame.width+1), ((i*CellSize)+CellSize));
         }
     }
-
-    public void RunGeneration(){
-        Map<Point,Boolean> NextGenerationGrid = new HashMap<Point,Boolean>();
-        for (Map.Entry<Point,Boolean> cell: LifeGrid.entrySet()){
-            int LiveCount = GetLiveNeighbors(cell.getKey().x,cell.getKey().y);
-            if (cell.getValue()){ //Cell is live
-                if (LiveCount==3 || LiveCount==2){
-                    NextGenerationGrid.put(new Point(cell.getKey().x,cell.getKey().y),true);
-                }else{
-                    NextGenerationGrid.put(new Point(cell.getKey().x,cell.getKey().y),false);
-                }
-            }else{//cell is dead
-                if(LiveCount ==3){
-                    NextGenerationGrid.put(new Point(cell.getKey().x,cell.getKey().y),true);
-                }else{
-                    NextGenerationGrid.put(new Point(cell.getKey().x,cell.getKey().y),false);
-                }
-            }
-
-        }
-        LifeGrid.clear();
-        LifeGrid.putAll(NextGenerationGrid);
-        repaint();
-    }
-
-    private int GetLiveNeighbors(int xi,int yi){
-        xi = xi+1;
-        yi = yi+1;
-        int leftColumn = xi-1;
-        if(leftColumn<0){leftColumn = LifeGrid.size()-1;};
-        int rightColumn = (xi+1) % LifeGrid.size();
-        int UpRow = yi-1;
-        if(UpRow<0){UpRow=LifeGrid.size()-1;}
-        int DownRow = (yi+1)% LifeGrid.size();
-        int LiveCount = 0;
-        for (Map.Entry<Point,Boolean> cell: LifeGrid.entrySet()){
-            if(cell.getKey().x == xi-1 && cell.getKey().y == yi-1){  if(cell.getValue()){LiveCount++;}}
-            if(cell.getKey().x == xi-1 && cell.getKey().y == yi){  if(cell.getValue()){LiveCount++;}}
-            if(cell.getKey().x == xi-1 && cell.getKey().y == yi+1){  if(cell.getValue()){LiveCount++;}}
-            if(cell.getKey().x == xi && cell.getKey().y == yi){  if(cell.getValue()){LiveCount++;}}
-            if(cell.getKey().x == xi && cell.getKey().y == yi){  if(cell.getValue()){LiveCount++;}}
-            if(cell.getKey().x == xi+1 && cell.getKey().y == yi-1){  if(cell.getValue()){LiveCount++;}}
-            if(cell.getKey().x == xi+1 && cell.getKey().y == yi+1){  if(cell.getValue()){LiveCount++;}}
-            if(cell.getKey().x == xi+1 && cell.getKey().y == yi){  if(cell.getValue()){LiveCount++;}}
-            }
-
-        System.out.println("x:"+xi+" y:"+yi+" value:"+LiveCount);
-        return LiveCount;
-    }
-
-
     public void cleanGrid() {
         LifeGrid.clear();
         repaint();
